@@ -38,7 +38,7 @@ namespace GetFBContent
         public static void insertFB(int dfg, string place_id, string msg, DateTime time, int kwid)
         {
             var cmd = new SqlCommand();
-            cmd.CommandText = @"Insert into FB_message (id,place_id, Message,time, KWID) values(@id,@place_id,@Message,@time,@KWID)";
+            cmd.CommandText = @"Insert into FB_message (id,place_id, Message,time, KWID,catch_time) values(@id,@place_id,@Message,@time,@KWID,getDate())";
 
             cmd.Parameters.Add("@id", SqlDbType.VarChar).Value = DateTime.Now.ToString("yyyyMMddhhmmssfff") + dfg.ToString();
             cmd.Parameters.Add("@place_id", SqlDbType.VarChar).Value = place_id;
@@ -64,15 +64,18 @@ namespace GetFBContent
         /// <summary>
         /// 取得 FB ID
         /// </summary>
+        /// <param name="num">用id的第一碼去分類</param>
         /// <returns></returns>
-        public static DataTable getFBNewID()
+        public static DataTable getFBNewID(int num)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = @"
                 select top 1 * from FB_place where (complete is null or complete = '' )
+                    and substring(id,0,2)=@num
                     --and id not in (select id from FB_place_Nantou)
                     order by id asc
             ";
+            cmd.Parameters.Add("@num", SqlDbType.Int).Value = num;
             DataTable theTable = Persister.Execute(cmd);
             if (theTable.Rows.Count > 0)
             {
@@ -87,12 +90,14 @@ namespace GetFBContent
         /// <summary>
         /// 更新 FB place 狀態
         /// </summary>
+        /// <param name="type">1: 成功；-1: 失敗(抓html失敗)；-2: 失敗(無法取得html高度)；-3: 失敗(HtmlDocument錯誤)</param>
+        /// <param name="place_id">FB_place 點位id</param>
         /// <returns></returns>
         public static void updFBplace(int type, string place_id)
         {
             var cmd = new SqlCommand();
             cmd.CommandText = @"
-                UPDATE FB_place SET complete =@type WHERE id =@id
+                UPDATE FB_place SET complete =@type, complete_time=getDate() WHERE id =@id
             ";
             cmd.Parameters.Add("@type", SqlDbType.Int).Value = type;
             cmd.Parameters.Add("@id", SqlDbType.NVarChar).Value = place_id;
