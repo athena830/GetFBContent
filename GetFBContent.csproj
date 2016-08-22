@@ -75,7 +75,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="FBService.cs" />
     <Compile Include="FBService_Nantou.cs" />
     <Compile Include="Form1.cs">

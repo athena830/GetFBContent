@@ -90,7 +90,7 @@ namespace GetFBContent
         /// <summary>
         /// 更新 FB place 狀態
         /// </summary>
-        /// <param name="type">1: 成功；-1: 失敗(抓html失敗)；-2: 失敗(無法取得html高度)；-3: 失敗(HtmlDocument錯誤)</param>
+        /// <param name="type">1: 成功；-1: 失敗(抓html失敗)；-2: 失敗(無法取得html高度)；-3: 失敗(HtmlDocument錯誤)；-99失敗(記憶體不足)</param>
         /// <param name="place_id">FB_place 點位id</param>
         /// <returns></returns>
         public static void updFBplace(int type, string place_id)
